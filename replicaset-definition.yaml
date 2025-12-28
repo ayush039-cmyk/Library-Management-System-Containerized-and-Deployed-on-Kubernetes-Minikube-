@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: lms
+  labels:
+    app: lms
+    type: flask
+spec:
+  template:
+   metadata:
+    name: lms
+    labels:
+      app: lms
+      type: flask
+   spec:
+     containers:
+       - name: flask
+         image: dockerayush039/lmflaskapp
+         ports:
+           - containerPort: 5000
+         env:
+           - name: MYSQL_HOST
+             value: "localhost"
+           - name: MYSQL_USER
+             value: "user"
+           - name: MYSQL_PASSWORD
+             value: "password"
+           - name: MYSQL_DATABASE
+             value: "lms"
+       - name: db
+         image: mysql:8.0
+         ports:
+           - containerPort: 3306
+         env:
+           - name: MYSQL_ROOT_PASSWORD
+             value: "rootpassword"
+           - name: MYSQL_HOST
+             value: "localhost"
+           - name: MYSQL_USER
+             value: "user"
+           - name: MYSQL_PASSWORD
+             value: "password"
+  
+  replicas: 3
+  selector:
+    matchLabels:
+      app: lms
+      type: flask    

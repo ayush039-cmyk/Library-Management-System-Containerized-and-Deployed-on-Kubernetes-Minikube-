@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lms
+  labels:
+    app: lms
+    type: flask
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: lms
+      type: flask
+  template:
+    metadata:
+      name: lms
+      labels:
+        app: lms
+        type: flask
+    spec:
+      containers:
+        - name: flask
+          image: dockerayush039/lmflaskapp
+          ports:
+            - containerPort: 5000
+          envFrom:
+            - configMapRef:
+               name: flask-config
+        - name: db
+          image: mysql:8.0
+          ports:
+            - containerPort: 3306
+          envFrom:
+            - configMapRef:
+               name: flask-config
+
