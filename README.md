@@ -2,37 +2,93 @@
 
 Library Management System (LMS) - Containerized using Docker And Deployed on Kubernetes(minikube)
 
-## Docker Implementation
+# Docker Implementation
 
-Created a multi-container application using Docker and Docker Compose to orchestrate Flask and MySQL services. Built a custom Docker image for the Flask application with Python 3.9-slim base, installing all required dependencies including MySQL client libraries and cryptography package for secure database authentication.
+The Flask application is containerized using a custom Docker image built on the lightweight python:3.9-slim base image.
 
-## Docker Compose Orchestration
+## Key highlights:
 
-Configured docker-compose.yaml to manage two services: flask-app and mysql-db. Implemented service discovery where Flask connects to MySQL using Docker's internal DNS (mysql hostname). Added persistent volumes for MySQL data storage and initialization scripts to pre-populate the database with sample book records.
+Installed all required Python dependencies via requirements.txt
 
-## Kubernetes Deployment
+Included MySQL client libraries and cryptography for secure database authentication
 
-Transitioned to Kubernetes for production-grade orchestration with multiple resource manifests:
+Configured environment variables for runtime flexibility
+
+Used a clean, minimal image for faster builds and reduced attack surface
+
+This approach ensures consistent runtime behavior across development and production environments.
+
+# Docker Compose Orchestration
+
+Docker Compose is used to orchestrate a multi-container setup consisting of:
+
+Flask application service
+
+MySQL database service
+
+## Key features:
+
+Service-to-service communication using Docker’s internal DNS (MySQL accessible via hostname mysql)
+
+Persistent MySQL storage using Docker volumes
+
+Automatic database initialization using SQL scripts mounted into /docker-entrypoint-initdb.d
+
+Clear separation of application and database concerns
+
+This setup enables seamless local development and mirrors real-world microservice architectures.
+
+# Kubernetes Deployment
+
+The application is migrated to Kubernetes to demonstrate production-grade orchestration and scalability.
+
 ## Pod Configuration
 
-Created a single Pod containing both Flask and MySQL containers sharing network namespace, enabling communication via localhost. Added readiness checks and initialization wait logic to ensure database availability before Flask starts.
+Deployed Flask and MySQL containers within a single Pod to share the network namespace
+
+Enabled communication via localhost
+
+Implemented startup ordering logic to ensure the database is available before Flask initializes
+
+This approach simplifies internal networking while demonstrating container co-location patterns.
 
 ## Service Exposure
 
-Deployed Service resources with NodePort type (port 30080) to expose the Flask application externally, enabling access from outside the Kubernetes cluster while maintaining internal service discovery.
+Exposed the Flask application using a NodePort Service
 
-## Deployment & ReplicaSet
+Configured external access on port 30080
 
-Implemented Deployment controllers for declarative updates and self-healing capabilities. Configured ReplicaSet to maintain desired pod replicas, ensuring high availability and scalability of the Flask application.
+Maintained internal cluster networking for secure service communication
+
+This allows the application to be accessed from outside the Kubernetes cluster.
+
+## Deployment & Scaling
+
+Implemented Deployment controllers for declarative application management
+
+Used ReplicaSets to maintain the desired number of pod replicas
+
+Enabled self-healing, rolling updates, and scalability
+
+This ensures high availability and fault tolerance in production environments.
 
 ## Configuration Management
 
-Utilized ConfigMap to externalize application configuration, separating environment-specific settings from application code. This includes database connection strings, feature flags, and other runtime parameters.
+Used ConfigMaps to externalize application configuration
+
+Decoupled environment-specific values from application code
+
+Managed database credentials, connection parameters, and runtime settings cleanly
+
+This follows Kubernetes best practices for configuration management.
 
 ## Persistent Storage
 
-Configured PersistentVolumeClaims for MySQL data persistence, ensuring database state survives pod restarts and rescheduling across cluster nodes.
+Configured PersistentVolumeClaims (PVCs) for MySQL data
 
+Ensured database state persists across pod restarts and rescheduling
+
+Enabled reliable data durability within the Kubernetes cluster
 
 # Key Features Implemented
 
